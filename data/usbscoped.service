@@ -1,0 +1,11 @@
+[Unit]
+Description=USBscope daemon
+After=multi-user.target
+Wants=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/usbscoped
+
+[Install]
+WantedBy=multi-user.target
