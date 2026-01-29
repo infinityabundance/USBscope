@@ -17,10 +17,10 @@ public:
     explicit UsbscopeDBusAdaptor(UsbDaemon *daemon);
 
 public slots:
-    QString GetVersion() const;
-    QList<QVariantList> GetRecentEvents(int limit) const;
-    QList<QVariantList> GetCurrentDevices() const;
-    QVariantList GetStateSummary() const;
+    QString GetVersion();
+    QList<QVariantList> GetRecentEvents(int limit);
+    QList<QVariantList> GetCurrentDevices();
+    QVariantList GetStateSummary();
 
 signals:
     void LogEvent(const QVariantList &event);
@@ -41,7 +41,6 @@ class UsbscopeDBusClient : public QObject {
 public:
     explicit UsbscopeDBusClient(QObject *parent = nullptr);
 
-    QString getVersion();
     QList<UsbEvent> getRecentEvents(int limit);
     QList<UsbDeviceInfo> getCurrentDevices();
     QVariantList getStateSummary();

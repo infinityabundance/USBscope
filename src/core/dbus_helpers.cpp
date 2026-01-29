@@ -2,7 +2,6 @@
 
 #include <QDBusConnectionInterface>
 #include <QDBusError>
-#include <QDebug>
 #include <QVariant>
 
 #include "usbdaemon.h"
@@ -17,19 +16,19 @@ UsbscopeDBusAdaptor::UsbscopeDBusAdaptor(UsbDaemon *daemon)
     : QDBusAbstractAdaptor(daemon), m_daemon(daemon) {
 }
 
-QString UsbscopeDBusAdaptor::GetVersion() const {
-    return QStringLiteral("USBscope 0.1");
+QString UsbscopeDBusAdaptor::GetVersion() {
+    return QStringLiteral("0.1.0");
 }
 
-QList<QVariantList> UsbscopeDBusAdaptor::GetRecentEvents(int limit) const {
+QList<QVariantList> UsbscopeDBusAdaptor::GetRecentEvents(int limit) {
     return m_daemon ? m_daemon->recentEventsVariant(limit) : QList<QVariantList>{};
 }
 
-QList<QVariantList> UsbscopeDBusAdaptor::GetCurrentDevices() const {
+QList<QVariantList> UsbscopeDBusAdaptor::GetCurrentDevices() {
     return m_daemon ? m_daemon->currentDevicesVariant() : QList<QVariantList>{};
 }
 
-QVariantList UsbscopeDBusAdaptor::GetStateSummary() const {
+QVariantList UsbscopeDBusAdaptor::GetStateSummary() {
     return m_daemon ? m_daemon->stateSummary() : QVariantList{};
 }
 
@@ -77,7 +76,6 @@ QList<UsbEvent> UsbscopeDBusClient::getRecentEvents(int limit) {
     QDBusReply<QList<QVariantList>> reply = m_interface.call("GetRecentEvents", limit);
     QList<UsbEvent> events;
     if (!reply.isValid()) {
-        qWarning() << "GetRecentEvents failed:" << reply.error().message();
         return events;
     }
     for (const QVariantList &item : reply.value()) {
@@ -90,7 +88,6 @@ QList<UsbDeviceInfo> UsbscopeDBusClient::getCurrentDevices() {
     QDBusReply<QList<QVariantList>> reply = m_interface.call("GetCurrentDevices");
     QList<UsbDeviceInfo> devices;
     if (!reply.isValid()) {
-        qWarning() << "GetCurrentDevices failed:" << reply.error().message();
         return devices;
     }
     for (const QVariantList &item : reply.value()) {
@@ -101,20 +98,7 @@ QList<UsbDeviceInfo> UsbscopeDBusClient::getCurrentDevices() {
 
 QVariantList UsbscopeDBusClient::getStateSummary() {
     QDBusReply<QVariantList> reply = m_interface.call("GetStateSummary");
-    if (!reply.isValid()) {
-        qWarning() << "GetStateSummary failed:" << reply.error().message();
-        return {};
-    }
-    return reply.value();
-}
-
-QString UsbscopeDBusClient::getVersion() {
-    QDBusReply<QString> reply = m_interface.call("GetVersion");
-    if (!reply.isValid()) {
-        qWarning() << "GetVersion failed:" << reply.error().message();
-        return {};
-    }
-    return reply.value();
+    return reply.isValid() ? reply.value() : QVariantList{};
 }
 
 void UsbscopeDBusClient::handleLogEvent(const QVariantList &event) {

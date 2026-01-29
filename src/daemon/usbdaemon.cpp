@@ -52,19 +52,8 @@ QList<QVariantList> UsbDaemon::currentDevicesVariant() const {
 
 QVariantList UsbDaemon::stateSummary() const {
     QVariantList summary;
-    int usbEvents = 0;
-    int errorEvents = 0;
-    for (const UsbEvent &event : m_events) {
-        if (event.isUsb) {
-            ++usbEvents;
-        }
-        if (event.isError) {
-            ++errorEvents;
-        }
-    }
     summary.append(m_events.size());
-    summary.append(usbEvents);
-    summary.append(errorEvents);
+    summary.append(m_devices.size());
     return summary;
 }
 

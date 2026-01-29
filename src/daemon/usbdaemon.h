@@ -14,12 +14,11 @@ public:
     void setAdaptor(UsbscopeDBusAdaptor *adaptor);
 
     void appendEvent(const UsbEvent &event);
+    void setDevices(const QList<UsbDeviceInfo> &devices);
+
     QList<QVariantList> recentEventsVariant(int limit) const;
     QList<QVariantList> currentDevicesVariant() const;
     QVariantList stateSummary() const;
-
-public slots:
-    void setDevices(const QList<UsbDeviceInfo> &devices);
 
 private:
     void recordErrorBurst(const UsbEvent &event);
