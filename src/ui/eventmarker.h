@@ -15,6 +15,7 @@ protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
 private:
     UsbEvent m_event;
