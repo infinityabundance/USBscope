@@ -6,9 +6,6 @@
   </a>
 </p>
 
-<<<<<<< HEAD
-USBscope is a live USB event dashboard for CachyOS / ArchLinux. It ships a small system daemon that tails kernel USB logs and tracks connected USB devices, then exposes that data over D-Bus to a desktop UI and tray app. The result is a real-time view of what is happening on your USB bus, plus a quick way to surface errors as they happen.
-=======
 <p align="center">
   <img src="https://img.shields.io/badge/C%2B%2B-17-00599C?logo=c%2B%2B&logoColor=white" alt="C++17">
   <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="Apache 2.0">
@@ -16,8 +13,7 @@ USBscope is a live USB event dashboard for CachyOS / ArchLinux. It ships a small
   <img src="https://img.shields.io/badge/CachyOS-0A7A7A?logo=linux&logoColor=white" alt="CachyOS">
 </p>
 
-USBscope is a live USB event dashboard for Linux. It ships a small system daemon that tails kernel USB logs and tracks connected USB devices, then exposes that data over D-Bus to a desktop UI and tray app. The result is a real-time view of what is happening on your USB bus, plus a quick way to surface errors as they happen.
->>>>>>> 353c897 (Fix tray UI launch and add README badges)
+USBscope is a live USB event dashboard for CachyOS / ArchLinux. It ships a small system daemon that tails kernel USB logs and tracks connected USB devices, then exposes that data over D-Bus to a desktop UI and tray app. The result is a real-time view of what is happening on your USB bus, plus a quick way to surface errors as they happen.
 
 ## Why it is useful
 - Debug flaky peripherals by correlating hotplug events with kernel messages.
