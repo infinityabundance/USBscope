@@ -32,3 +32,7 @@ private:
 
 QDBusConnection usbscopeBus();
 void registerUsbDbusTypes();
+bool isUsbScopeRunning();
+bool startUsbScopeDaemon();
+bool stopUsbScopeDaemon();
+bool startUsbScopeTray();

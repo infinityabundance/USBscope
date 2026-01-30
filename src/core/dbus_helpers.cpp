@@ -1,8 +1,11 @@
 #include "dbus_helpers.h"
 
+#include <QCoreApplication>
 #include <QDBusConnectionInterface>
 #include <QDBusError>
 #include <QDBusMetaType>
+#include <QFileInfo>
+#include <QProcess>
 #include <QVariant>
 
 namespace {
@@ -96,4 +99,49 @@ QDBusConnection usbscopeBus() {
 void registerUsbDbusTypes() {
     qRegisterMetaType<QList<QVariantList>>("QList<QVariantList>");
     qDBusRegisterMetaType<QList<QVariantList>>();
+}
+
+namespace {
+QString executablePath(const QString &name) {
+    const QString candidate = QCoreApplication::applicationDirPath() + "/" + name;
+    QFileInfo info(candidate);
+    if (info.exists() && info.isExecutable()) {
+        return candidate;
+    }
+    return name;
+}
+
+bool isProcessRunning(const QString &name) {
+    return QProcess::execute("pgrep", {"-x", name}) == 0;
+}
+}
+
+bool isUsbScopeRunning() {
+    QDBusConnection bus = usbscopeBus();
+    if (!bus.isConnected()) {
+        return false;
+    }
+    QDBusConnectionInterface *iface = bus.interface();
+    if (!iface) {
+        return false;
+    }
+    return iface->isServiceRegistered("org.cachyos.USBscope");
+}
+
+bool startUsbScopeDaemon() {
+    if (isUsbScopeRunning()) {
+        return true;
+    }
+    return QProcess::startDetached(executablePath("usbscoped"));
+}
+
+bool stopUsbScopeDaemon() {
+    return QProcess::startDetached("pkill", {"-x", "usbscoped"});
+}
+
+bool startUsbScopeTray() {
+    if (isProcessRunning("usbscope-tray")) {
+        return true;
+    }
+    return QProcess::startDetached(executablePath("usbscope-tray"));
 }

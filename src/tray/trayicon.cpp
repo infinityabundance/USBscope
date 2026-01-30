@@ -33,12 +33,16 @@ void TrayIcon::setupMenu() {
 
     m_openAction = m_menu.addAction("Open USBscope");
     m_aboutAction = m_menu.addAction("About USBscope");
+    m_startDaemonAction = m_menu.addAction("Start Daemon");
+    m_stopDaemonAction = m_menu.addAction("Stop Daemon");
     m_copyAction = m_menu.addAction("Copy last error");
     m_menu.addSeparator();
     m_quitAction = m_menu.addAction("Quit");
 
     connect(m_openAction, &QAction::triggered, this, &TrayIcon::openUi);
     connect(m_aboutAction, &QAction::triggered, this, &TrayIcon::openRepo);
+    connect(m_startDaemonAction, &QAction::triggered, this, &TrayIcon::startDaemon);
+    connect(m_stopDaemonAction, &QAction::triggered, this, &TrayIcon::stopDaemon);
     connect(m_copyAction, &QAction::triggered, this, &TrayIcon::copyLastError);
     connect(m_quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
 
@@ -94,19 +98,28 @@ void TrayIcon::updateDaemonStatus() {
     if (!m_statusAction) {
         return;
     }
+    const bool running = isUsbScopeRunning();
     m_statusAction->setText(daemonStatusText());
+    if (m_startDaemonAction) {
+        m_startDaemonAction->setEnabled(!running);
+    }
+    if (m_stopDaemonAction) {
+        m_stopDaemonAction->setEnabled(running);
+    }
     updateTooltip();
 }
 
 QString TrayIcon::daemonStatusText() const {
-    QDBusConnection bus = usbscopeBus();
-    if (!bus.isConnected()) {
-        return QStringLiteral("Daemon: bus unavailable");
-    }
-    QDBusConnectionInterface *iface = bus.interface();
-    if (!iface) {
-        return QStringLiteral("Daemon: bus unavailable");
-    }
-    bool running = iface->isServiceRegistered("org.cachyos.USBscope");
+    const bool running = isUsbScopeRunning();
     return running ? QStringLiteral("Daemon: running") : QStringLiteral("Daemon: stopped");
+}
+
+void TrayIcon::startDaemon() {
+    startUsbScopeDaemon();
+    updateDaemonStatus();
+}
+
+void TrayIcon::stopDaemon() {
+    stopUsbScopeDaemon();
+    updateDaemonStatus();
 }
