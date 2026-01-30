@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 
 #include "aboutdialog.h"
+#include "eventmarker.h"
+#include "timelinescene.h"
+#include "timelineview.h"
 
 #include <QApplication>
 #include <QClipboard>
@@ -14,7 +17,9 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QSplitter>
+#include <QTabWidget>
 #include <QTextStream>
 #include <QToolBar>
 #include <QVBoxLayout>
@@ -251,6 +256,13 @@ void MainWindow::setupUi() {
     QWidget *central = new QWidget(this);
     QVBoxLayout *mainLayout = new QVBoxLayout(central);
 
+    // Create tab widget
+    m_tabWidget = new QTabWidget(this);
+
+    // ===== Log View Tab =====
+    QWidget *logTab = new QWidget();
+    QVBoxLayout *logLayout = new QVBoxLayout(logTab);
+
     QHBoxLayout *filterLayout = new QHBoxLayout();
 
     m_textFilter = new QLineEdit(this);
@@ -297,8 +309,48 @@ void MainWindow::setupUi() {
     splitter->setStretchFactor(0, 3);
     splitter->setStretchFactor(1, 1);
 
-    mainLayout->addLayout(filterLayout);
-    mainLayout->addWidget(splitter);
+    logLayout->addLayout(filterLayout);
+    logLayout->addWidget(splitter);
+
+    // ===== Timeline Tab =====
+    QWidget *timelineTab = new QWidget();
+    QVBoxLayout *timelineLayout = new QVBoxLayout(timelineTab);
+
+    // Create timeline controls
+    QHBoxLayout *timelineControls = new QHBoxLayout();
+    QPushButton *zoomInBtn = new QPushButton(QIcon::fromTheme("zoom-in"), "Zoom In", this);
+    QPushButton *zoomOutBtn = new QPushButton(QIcon::fromTheme("zoom-out"), "Zoom Out", this);
+    QPushButton *resetZoomBtn = new QPushButton(QIcon::fromTheme("zoom-original"), "Reset Zoom", this);
+
+    timelineControls->addWidget(new QLabel("Timeline Controls:"));
+    timelineControls->addWidget(zoomInBtn);
+    timelineControls->addWidget(zoomOutBtn);
+    timelineControls->addWidget(resetZoomBtn);
+    timelineControls->addStretch();
+
+    QLabel *helpLabel = new QLabel("Ctrl+Wheel to zoom, Shift+Click or Middle-click to pan");
+    helpLabel->setStyleSheet("color: #666;");
+    timelineControls->addWidget(helpLabel);
+
+    // Create timeline view and scene
+    m_timelineScene = new TimelineScene(this);
+    m_timelineView = new TimelineView(this);
+    m_timelineView->setScene(m_timelineScene);
+
+    timelineLayout->addLayout(timelineControls);
+    timelineLayout->addWidget(m_timelineView);
+
+    // Connect timeline controls
+    connect(zoomInBtn, &QPushButton::clicked, m_timelineView, &TimelineView::zoomIn);
+    connect(zoomOutBtn, &QPushButton::clicked, m_timelineView, &TimelineView::zoomOut);
+    connect(resetZoomBtn, &QPushButton::clicked, m_timelineView, &TimelineView::resetZoom);
+    connect(m_timelineScene, &TimelineScene::eventClicked, this, &MainWindow::onTimelineEventClicked);
+
+    // Add tabs to tab widget
+    m_tabWidget->addTab(logTab, QIcon::fromTheme("view-list-details"), "Log View");
+    m_tabWidget->addTab(timelineTab, QIcon::fromTheme("view-time-schedule"), "Timeline");
+
+    mainLayout->addWidget(m_tabWidget);
 
     setCentralWidget(central);
     setWindowTitle("USBscope");
@@ -320,12 +372,15 @@ void MainWindow::setupUi() {
 }
 
 void MainWindow::loadInitialData() {
-    m_model.setEvents(m_client.getRecentEvents(500));
+    QList<UsbEvent> events = m_client.getRecentEvents(500);
+    m_model.setEvents(events);
+    m_timelineScene->setEvents(events);
     refreshDevices();
 }
 
 void MainWindow::handleLogEvent(const UsbEvent &event) {
     m_model.appendEvent(event);
+    m_timelineScene->addEvent(event);
 }
 
 void MainWindow::refreshDevices() {
@@ -459,4 +514,24 @@ void MainWindow::showContextMenu(const QPoint &pos) {
     contextMenu.addAction(m_exportCsvAction);
 
     contextMenu.exec(m_logView->mapToGlobal(pos));
+}
+
+void MainWindow::onTimelineEventClicked(const UsbEvent &event) {
+    // Switch to Log View tab
+    m_tabWidget->setCurrentIndex(0);
+
+    // Find the event in the model and select it
+    for (int row = 0; row < m_filterModel.rowCount(); ++row) {
+        QModelIndex proxyIndex = m_filterModel.index(row, 0);
+        QModelIndex sourceIndex = m_filterModel.mapToSource(proxyIndex);
+
+        const UsbEvent &rowEvent = m_model.eventAt(sourceIndex.row());
+
+        // Match by timestamp and message (unique enough)
+        if (rowEvent.timestamp == event.timestamp && rowEvent.message == event.message) {
+            m_logView->selectRow(row);
+            m_logView->scrollTo(proxyIndex, QAbstractItemView::PositionAtCenter);
+            break;
+        }
+    }
 }
