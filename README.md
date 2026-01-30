@@ -53,7 +53,15 @@ There is also a sample systemd service file at `data/usbscoped.service`.
 ## D-Bus API
 Interface: `org.cachyos.USBscope1` on the session bus by default.
 
-Set `USBSCOPE_BUS=system` to bind to the system bus (requires appropriate D-Bus policy).
+If the session bus is unavailable, USBscope falls back to the system bus. You can also force system bus use with:
+
+```bash
+USBSCOPE_BUS=system usbscope-ui
+USBSCOPE_BUS=system usbscoped
+USBSCOPE_BUS=system usbscope-tray
+```
+
+Note: system bus registration may require an appropriate D-Bus policy.
 
 Methods:
 - `GetVersion()`

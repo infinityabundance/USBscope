@@ -85,5 +85,9 @@ QDBusConnection usbscopeBus() {
     if (scope == "system") {
         return QDBusConnection::systemBus();
     }
-    return QDBusConnection::sessionBus();
+    QDBusConnection session = QDBusConnection::sessionBus();
+    if (session.isConnected()) {
+        return session;
+    }
+    return QDBusConnection::systemBus();
 }
