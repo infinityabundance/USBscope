@@ -4,20 +4,13 @@
 #include <QClipboard>
 #include <QDBusConnectionInterface>
 #include <QDesktopServices>
-#include <QFileInfo>
 #include <QIcon>
 #include <QProcess>
 #include <QUrl>
 
 TrayIcon::TrayIcon(QObject *parent)
     : QSystemTrayIcon(parent) {
-    const QString appDir = QCoreApplication::applicationDirPath();
-    const QString iconPath = appDir + "/../data/icons/usbscope.svg";
-    if (QFileInfo::exists(iconPath)) {
-        setIcon(QIcon(iconPath));
-    } else {
-        setIcon(QIcon::fromTheme("usb"));
-    }
+    setIcon(QIcon::fromTheme("usb"));
     setupMenu();
 
     connect(&m_client, &UsbscopeDBusClient::LogEvent, this, &TrayIcon::handleLogEvent);
