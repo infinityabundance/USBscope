@@ -26,6 +26,7 @@ EventMarker::EventMarker(const UsbEvent &event, qreal x, qreal y, qreal size)
 
     setAcceptHoverEvents(true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
+    setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
     setCursor(Qt::PointingHandCursor);
 }
 

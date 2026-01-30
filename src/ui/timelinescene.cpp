@@ -61,7 +61,7 @@ void TimelineScene::addEvent(const UsbEvent &event) {
         // Add single marker without rebuilding
         qreal x = timestampToX(event.timestamp);
         qreal y = eventTypeToY(event);
-        EventMarker *marker = new EventMarker(event, x, y, 12.0);
+        EventMarker *marker = new EventMarker(event, x, y, 14.0);
         addItem(marker);
     }
 }
@@ -99,7 +99,7 @@ void TimelineScene::rebuildScene() {
         qreal x = timestampToX(event.timestamp);
         qreal y = eventTypeToY(event);
 
-        EventMarker *marker = new EventMarker(event, x, y, 12.0);
+        EventMarker *marker = new EventMarker(event, x, y, 14.0);
         addItem(marker);
     }
 
