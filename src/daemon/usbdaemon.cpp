@@ -1,5 +1,7 @@
 #include "usbdaemon.h"
 
+#include "dbus_adaptor.h"
+
 UsbDaemon::UsbDaemon(QObject *parent)
     : QObject(parent) {
 }
