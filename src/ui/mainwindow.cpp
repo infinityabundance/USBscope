@@ -11,10 +11,12 @@
 #include <QHeaderView>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QSplitter>
 #include <QTextStream>
+#include <QToolBar>
 #include <QVBoxLayout>
 
 UsbLogModel::UsbLogModel(QObject *parent)
@@ -184,6 +186,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
     setupActions();
     setupMenuBar();
+    setupToolBar();
     setupUi();
     loadInitialData();
 
@@ -232,6 +235,18 @@ void MainWindow::setupMenuBar() {
     setMenuBar(menuBar);
 }
 
+void MainWindow::setupToolBar() {
+    QToolBar *toolBar = new QToolBar("Main Toolbar", this);
+    toolBar->setMovable(false);
+
+    toolBar->addAction(m_exportCsvAction);
+    toolBar->addAction(m_copyAction);
+    toolBar->addSeparator();
+    toolBar->addAction(m_refreshAction);
+
+    addToolBar(toolBar);
+}
+
 void MainWindow::setupUi() {
     QWidget *central = new QWidget(this);
     QVBoxLayout *mainLayout = new QVBoxLayout(central);
@@ -271,6 +286,8 @@ void MainWindow::setupUi() {
     m_logView = new QTableView(this);
     m_logView->horizontalHeader()->setStretchLastSection(true);
     m_logView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_logView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(m_logView, &QTableView::customContextMenuRequested, this, &MainWindow::showContextMenu);
 
     m_deviceList = new QListWidget(this);
 
@@ -404,4 +421,42 @@ void MainWindow::copySelection() {
     }
 
     QApplication::clipboard()->setText(text);
+}
+
+void MainWindow::showContextMenu(const QPoint &pos) {
+    QMenu contextMenu(this);
+
+    QModelIndexList selectedRows = m_logView->selectionModel()->selectedRows();
+    bool hasSelection = !selectedRows.isEmpty();
+
+    QAction *copyRowAction = contextMenu.addAction(QIcon::fromTheme("edit-copy"), "Copy Selected Row(s)");
+    copyRowAction->setEnabled(hasSelection);
+    connect(copyRowAction, &QAction::triggered, this, &MainWindow::copySelection);
+
+    contextMenu.addSeparator();
+
+    QAction *copyAllAction = contextMenu.addAction(QIcon::fromTheme("edit-copy-all"), "Copy All Visible as CSV");
+    connect(copyAllAction, &QAction::triggered, this, [this]() {
+        QString text;
+        text += "\"Timestamp\",\"Level\",\"Subsystem\",\"Source\",\"Message\"\n";
+
+        for (int row = 0; row < m_filterModel.rowCount(); ++row) {
+            QStringList fields;
+            for (int col = 0; col < 5; ++col) {
+                QModelIndex index = m_filterModel.index(row, col);
+                QString value = index.data().toString();
+                value.replace("\"", "\"\"");
+                fields << QString("\"%1\"").arg(value);
+            }
+            text += fields.join(",") + "\n";
+        }
+
+        QApplication::clipboard()->setText(text);
+    });
+
+    contextMenu.addSeparator();
+
+    contextMenu.addAction(m_exportCsvAction);
+
+    contextMenu.exec(m_logView->mapToGlobal(pos));
 }

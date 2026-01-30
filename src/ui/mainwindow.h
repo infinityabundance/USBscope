@@ -75,10 +75,12 @@ private slots:
     void showAboutDialog();
     void exportToCsv();
     void copySelection();
+    void showContextMenu(const QPoint &pos);
 
 private:
     void setupUi();
     void setupMenuBar();
+    void setupToolBar();
     void setupActions();
     void loadInitialData();
 
