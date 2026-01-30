@@ -8,7 +8,8 @@ JournalTail::JournalTail(QObject *parent)
 }
 
 void JournalTail::start() {
-    m_process.start("journalctl", {"-k", "-f", "-o", "short"});
+    // Seed with recent kernel logs before following new entries.
+    m_process.start("journalctl", {"-k", "-n", "200", "-f", "-o", "short"});
 }
 
 void JournalTail::handleReadyRead() {
