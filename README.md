@@ -6,7 +6,18 @@
   </a>
 </p>
 
+<<<<<<< HEAD
 USBscope is a live USB event dashboard for CachyOS / ArchLinux. It ships a small system daemon that tails kernel USB logs and tracks connected USB devices, then exposes that data over D-Bus to a desktop UI and tray app. The result is a real-time view of what is happening on your USB bus, plus a quick way to surface errors as they happen.
+=======
+<p align="center">
+  <img src="https://img.shields.io/badge/C%2B%2B-17-00599C?logo=c%2B%2B&logoColor=white" alt="C++17">
+  <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="Apache 2.0">
+  <img src="https://img.shields.io/badge/Arch%20Linux-1793D1?logo=arch-linux&logoColor=white" alt="Arch Linux">
+  <img src="https://img.shields.io/badge/CachyOS-0A7A7A?logo=linux&logoColor=white" alt="CachyOS">
+</p>
+
+USBscope is a live USB event dashboard for Linux. It ships a small system daemon that tails kernel USB logs and tracks connected USB devices, then exposes that data over D-Bus to a desktop UI and tray app. The result is a real-time view of what is happening on your USB bus, plus a quick way to surface errors as they happen.
+>>>>>>> 353c897 (Fix tray UI launch and add README badges)
 
 ## Why it is useful
 - Debug flaky peripherals by correlating hotplug events with kernel messages.
@@ -44,6 +55,24 @@ cmake --build build
 ```
 
 The build produces three executables: `usbscoped`, `usbscope-ui`, and `usbscope-tray`.
+
+## Install dependencies
+
+### Arch / CachyOS
+```bash
+sudo pacman -S --needed cmake make gcc qt6-base qt6-tools libudev0-shim
+```
+
+### Fedora
+```bash
+sudo dnf install cmake gcc-c++ qt6-qtbase-devel qt6-qttools-devel systemd-devel libudev-devel
+```
+
+### Ubuntu / Debian
+```bash
+sudo apt update
+sudo apt install cmake g++ qt6-base-dev qt6-tools-dev libudev-dev
+```
 
 ## Run
 Start the daemon first, then launch the UI or tray app:

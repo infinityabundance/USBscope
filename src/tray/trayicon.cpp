@@ -79,7 +79,7 @@ QString TrayIcon::tooltipText() const {
 }
 
 void TrayIcon::openUi() {
-    QProcess::startDetached("usbscope-ui");
+    startUsbScopeUi();
 }
 
 void TrayIcon::openRepo() {

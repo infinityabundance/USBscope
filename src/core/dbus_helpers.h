@@ -36,3 +36,4 @@ bool isUsbScopeRunning();
 bool startUsbScopeDaemon();
 bool stopUsbScopeDaemon();
 bool startUsbScopeTray();
+bool startUsbScopeUi();
