@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://github.com/infinityabundance/USBscope">
-    <img src="data/icons/usbscope.svg" alt="USBscope logo" width="128" height="128">
+    <img src="assets/usbscope.png" alt="USBscope" width="128" height="128">
   </a>
 </p>
 
