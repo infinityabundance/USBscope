@@ -19,7 +19,7 @@ AboutDialog::AboutDialog(QWidget *parent)
 
     QLabel *iconLabel = new QLabel(this);
     const QString appDir = QCoreApplication::applicationDirPath();
-    const QString iconPath = appDir + "/../data/icons/usbscope.svg";
+    const QString iconPath = appDir + "/../assets/usbscope.png";
     QPixmap logo;
     if (QFileInfo::exists(iconPath)) {
         logo.load(iconPath);
