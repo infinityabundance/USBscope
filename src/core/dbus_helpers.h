@@ -29,3 +29,5 @@ private slots:
 private:
     QDBusInterface m_interface;
 };
+
+QDBusConnection usbscopeBus();
