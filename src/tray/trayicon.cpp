@@ -4,13 +4,20 @@
 #include <QClipboard>
 #include <QDBusConnectionInterface>
 #include <QDesktopServices>
+#include <QFileInfo>
 #include <QIcon>
 #include <QProcess>
 #include <QUrl>
 
 TrayIcon::TrayIcon(QObject *parent)
     : QSystemTrayIcon(parent) {
-    setIcon(QIcon::fromTheme("usb"));
+    const QString appDir = QCoreApplication::applicationDirPath();
+    const QString iconPath = appDir + "/../data/icons/usbscope.svg";
+    if (QFileInfo::exists(iconPath)) {
+        setIcon(QIcon(iconPath));
+    } else {
+        setIcon(QIcon::fromTheme("usb"));
+    }
     setupMenu();
 
     connect(&m_client, &UsbscopeDBusClient::LogEvent, this, &TrayIcon::handleLogEvent);
@@ -83,7 +90,10 @@ void TrayIcon::openUi() {
 }
 
 void TrayIcon::openRepo() {
-    QDesktopServices::openUrl(QUrl("https://github.com/infinityabundance/USBscope"));
+    const QUrl url("https://github.com/infinityabundance/USBscope");
+    if (!QDesktopServices::openUrl(url)) {
+        QProcess::startDetached("xdg-open", {url.toString()});
+    }
 }
 
 void TrayIcon::copyLastError() {

@@ -1,5 +1,11 @@
 # USBscope
 
+<p align="center">
+  <a href="https://github.com/infinityabundance/USBscope">
+    <img src="data/icons/usbscope.svg" alt="USBscope logo" width="128" height="128">
+  </a>
+</p>
+
 USBscope is a live USB event dashboard for Linux. It ships a small system daemon that tails kernel USB logs and tracks connected USB devices, then exposes that data over D-Bus to a desktop UI and tray app. The result is a real-time view of what is happening on your USB bus, plus a quick way to surface errors as they happen.
 
 ## Why it is useful
