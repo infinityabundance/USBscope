@@ -20,6 +20,8 @@ private slots:
     void openRepo();
     void copyLastError();
     void updateDaemonStatus();
+    void startDaemon();
+    void stopDaemon();
 
 private:
     void setupMenu();
@@ -31,6 +33,8 @@ private:
     QAction *m_openAction = nullptr;
     QAction *m_statusAction = nullptr;
     QAction *m_aboutAction = nullptr;
+    QAction *m_startDaemonAction = nullptr;
+    QAction *m_stopDaemonAction = nullptr;
     QAction *m_copyAction = nullptr;
     QAction *m_quitAction = nullptr;
 

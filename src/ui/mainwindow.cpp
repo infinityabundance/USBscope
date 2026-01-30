@@ -215,6 +215,12 @@ void MainWindow::setupActions() {
     m_aboutAction = new QAction(QIcon::fromTheme("help-about"), "About USBscope", this);
     connect(m_aboutAction, &QAction::triggered, this, &MainWindow::showAboutDialog);
 
+    m_startDaemonAction = new QAction(QIcon::fromTheme("media-playback-start"), "Start Daemon", this);
+    connect(m_startDaemonAction, &QAction::triggered, this, &MainWindow::startDaemon);
+
+    m_stopDaemonAction = new QAction(QIcon::fromTheme("media-playback-stop"), "Stop Daemon", this);
+    connect(m_stopDaemonAction, &QAction::triggered, this, &MainWindow::stopDaemon);
+
     m_quitAction = new QAction(QIcon::fromTheme("application-exit"), "Quit", this);
     m_quitAction->setShortcut(QKeySequence::Quit);
     connect(m_quitAction, &QAction::triggered, qApp, &QApplication::quit);
@@ -233,6 +239,10 @@ void MainWindow::setupMenuBar() {
 
     QMenu *viewMenu = menuBar->addMenu("&View");
     viewMenu->addAction(m_refreshAction);
+
+    QMenu *toolsMenu = menuBar->addMenu("&Tools");
+    toolsMenu->addAction(m_startDaemonAction);
+    toolsMenu->addAction(m_stopDaemonAction);
 
     QMenu *helpMenu = menuBar->addMenu("&Help");
     helpMenu->addAction(m_aboutAction);
@@ -534,4 +544,12 @@ void MainWindow::onTimelineEventClicked(const UsbEvent &event) {
             break;
         }
     }
+}
+
+void MainWindow::startDaemon() {
+    startUsbScopeDaemon();
+}
+
+void MainWindow::stopDaemon() {
+    stopUsbScopeDaemon();
 }

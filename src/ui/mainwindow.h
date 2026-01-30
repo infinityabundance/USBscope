@@ -81,6 +81,8 @@ private slots:
     void copySelection();
     void showContextMenu(const QPoint &pos);
     void onTimelineEventClicked(const UsbEvent &event);
+    void startDaemon();
+    void stopDaemon();
 
 private:
     void setupUi();
@@ -113,4 +115,6 @@ private:
     QAction *m_quitAction = nullptr;
     QAction *m_refreshAction = nullptr;
     QAction *m_aboutAction = nullptr;
+    QAction *m_startDaemonAction = nullptr;
+    QAction *m_stopDaemonAction = nullptr;
 };
