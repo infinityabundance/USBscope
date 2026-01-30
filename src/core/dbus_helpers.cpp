@@ -2,6 +2,7 @@
 
 #include <QDBusConnectionInterface>
 #include <QDBusError>
+#include <QDBusMetaType>
 #include <QVariant>
 
 namespace {
@@ -90,4 +91,9 @@ QDBusConnection usbscopeBus() {
         return session;
     }
     return QDBusConnection::systemBus();
+}
+
+void registerUsbDbusTypes() {
+    qRegisterMetaType<QList<QVariantList>>("QList<QVariantList>");
+    qDBusRegisterMetaType<QList<QVariantList>>();
 }

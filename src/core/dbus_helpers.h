@@ -31,3 +31,4 @@ private:
 };
 
 QDBusConnection usbscopeBus();
+void registerUsbDbusTypes();

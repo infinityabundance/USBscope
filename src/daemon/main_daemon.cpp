@@ -12,6 +12,8 @@
 int main(int argc, char *argv[]) {
     QCoreApplication app(argc, argv);
 
+    registerUsbDbusTypes();
+
     UsbDaemon daemon;
     UsbscopeDBusAdaptor adaptor(&daemon);
     daemon.setAdaptor(&adaptor);
