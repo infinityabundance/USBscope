@@ -9,9 +9,13 @@
 #include <QMainWindow>
 #include <QSortFilterProxyModel>
 #include <QTableView>
+#include <QTabWidget>
 #include <QTimer>
 
 #include "dbus_helpers.h"
+
+class TimelineView;
+class TimelineScene;
 
 class UsbLogModel : public QAbstractTableModel {
     Q_OBJECT
@@ -76,6 +80,7 @@ private slots:
     void exportToCsv();
     void copySelection();
     void showContextMenu(const QPoint &pos);
+    void onTimelineEventClicked(const UsbEvent &event);
 
 private:
     void setupUi();
@@ -89,6 +94,7 @@ private:
     UsbLogFilterProxyModel m_filterModel;
 
     // UI Components
+    QTabWidget *m_tabWidget = nullptr;
     QTableView *m_logView = nullptr;
     QListWidget *m_deviceList = nullptr;
     QLineEdit *m_textFilter = nullptr;
@@ -96,6 +102,10 @@ private:
     QDateTimeEdit *m_startDate = nullptr;
     QDateTimeEdit *m_endDate = nullptr;
     QCheckBox *m_enableDateFilter = nullptr;
+
+    // Timeline components
+    TimelineView *m_timelineView = nullptr;
+    TimelineScene *m_timelineScene = nullptr;
 
     // Actions
     QAction *m_exportCsvAction = nullptr;
