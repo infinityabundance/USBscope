@@ -1,6 +1,9 @@
 #include "eventmarker.h"
 
+#include <QApplication>
 #include <QBrush>
+#include <QClipboard>
+#include <QMenu>
 #include <QPen>
 #include <QToolTip>
 #include <QCursor>
@@ -75,4 +78,21 @@ void EventMarker::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
 void EventMarker::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     // Event will be emitted by the scene
     QGraphicsEllipseItem::mousePressEvent(event);
+}
+
+void EventMarker::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
+    QMenu menu;
+    QAction *copyAction = menu.addAction("Copy Event");
+    QAction *selected = menu.exec(event->screenPos());
+
+    if (selected == copyAction) {
+        QStringList fields;
+        fields << m_event.timestamp
+               << m_event.level
+               << m_event.subsystem
+               << m_event.source
+               << m_event.message
+               << m_event.deviceId;
+        QApplication::clipboard()->setText(fields.join("\t"));
+    }
 }
