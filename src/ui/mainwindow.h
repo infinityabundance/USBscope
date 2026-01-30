@@ -78,8 +78,11 @@ private slots:
     void onDateRangeChanged();
     void showAboutDialog();
     void exportToCsv();
+    void exportDevicesToCsv();
     void copySelection();
+    void copyDevicesSelection();
     void showContextMenu(const QPoint &pos);
+    void showDeviceContextMenu(const QPoint &pos);
     void onTimelineEventClicked(const UsbEvent &event);
     void startDaemon();
     void stopDaemon();
@@ -111,6 +114,7 @@ private:
 
     // Actions
     QAction *m_exportCsvAction = nullptr;
+    QAction *m_exportDevicesAction = nullptr;
     QAction *m_copyAction = nullptr;
     QAction *m_quitAction = nullptr;
     QAction *m_refreshAction = nullptr;

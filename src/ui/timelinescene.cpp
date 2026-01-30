@@ -10,7 +10,7 @@
 TimelineScene::TimelineScene(QObject *parent)
     : QGraphicsScene(parent) {
     setSceneRect(0, 0, m_sceneWidth, m_sceneHeight);
-    setBackgroundBrush(QBrush(QColor("#f5f5f5")));
+    setBackgroundBrush(QBrush(QColor("#1f2328")));
 }
 
 void TimelineScene::setEvents(const QList<UsbEvent> &events) {
@@ -85,13 +85,13 @@ void TimelineScene::rebuildScene() {
         qreal y = i * m_laneHeight + m_laneHeight;
 
         // Draw lane divider
-        QGraphicsLineItem *line = addLine(0, y, m_sceneWidth, y, QPen(QColor("#cccccc"), 1));
+        QGraphicsLineItem *line = addLine(0, y, m_sceneWidth, y, QPen(QColor("#3a3f45"), 1));
         line->setZValue(-1);
 
         // Draw lane label
         QGraphicsSimpleTextItem *label = addSimpleText(laneLabels[i]);
         label->setPos(10, i * m_laneHeight + 10);
-        label->setBrush(QBrush(QColor("#666666")));
+        label->setBrush(QBrush(QColor("#c7ccd1")));
     }
 
     // Add event markers
@@ -105,8 +105,11 @@ void TimelineScene::rebuildScene() {
 
     // Draw time axis
     QGraphicsLineItem *timeAxis = addLine(0, m_sceneHeight - 20, m_sceneWidth, m_sceneHeight - 20,
-                                           QPen(QColor("#333333"), 2));
+                                           QPen(QColor("#8c939b"), 2));
     timeAxis->setZValue(-1);
+
+    QRectF bounds = itemsBoundingRect().adjusted(-50, -20, 50, 40);
+    setSceneRect(bounds);
 }
 
 qreal TimelineScene::timestampToX(const QString &timestamp) const {
