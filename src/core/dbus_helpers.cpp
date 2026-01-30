@@ -12,8 +12,9 @@ const char *kInterfaceName = "org.cachyos.USBscope1";
 
 UsbscopeDBusClient::UsbscopeDBusClient(QObject *parent)
     : QObject(parent)
-    , m_interface(kServiceName, kObjectPath, kInterfaceName, QDBusConnection::systemBus()) {
-    QDBusConnection::systemBus().connect(
+    , m_interface(kServiceName, kObjectPath, kInterfaceName, usbscopeBus()) {
+    QDBusConnection bus = usbscopeBus();
+    bus.connect(
         kServiceName,
         kObjectPath,
         kInterfaceName,
@@ -21,7 +22,7 @@ UsbscopeDBusClient::UsbscopeDBusClient(QObject *parent)
         this,
         SLOT(handleLogEvent(QVariantList)));
 
-    QDBusConnection::systemBus().connect(
+    bus.connect(
         kServiceName,
         kObjectPath,
         kInterfaceName,
@@ -29,7 +30,7 @@ UsbscopeDBusClient::UsbscopeDBusClient(QObject *parent)
         this,
         SLOT(handleDevicesChanged()));
 
-    QDBusConnection::systemBus().connect(
+    bus.connect(
         kServiceName,
         kObjectPath,
         kInterfaceName,
@@ -77,4 +78,12 @@ void UsbscopeDBusClient::handleDevicesChanged() {
 
 void UsbscopeDBusClient::handleErrorBurst(int count, const QString &lastMessage) {
     emit ErrorBurst(count, lastMessage);
+}
+
+QDBusConnection usbscopeBus() {
+    const QByteArray scope = qgetenv("USBSCOPE_BUS");
+    if (scope == "system") {
+        return QDBusConnection::systemBus();
+    }
+    return QDBusConnection::sessionBus();
 }

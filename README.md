@@ -51,7 +51,9 @@ Start the daemon first, then launch the UI or tray app:
 There is also a sample systemd service file at `data/usbscoped.service`.
 
 ## D-Bus API
-Interface: `org.cachyos.USBscope1` on the system bus.
+Interface: `org.cachyos.USBscope1` on the session bus by default.
+
+Set `USBSCOPE_BUS=system` to bind to the system bus (requires appropriate D-Bus policy).
 
 Methods:
 - `GetVersion()`
