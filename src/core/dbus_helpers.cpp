@@ -145,3 +145,10 @@ bool startUsbScopeTray() {
     }
     return QProcess::startDetached(executablePath("usbscope-tray"));
 }
+
+bool startUsbScopeUi() {
+    if (isProcessRunning("usbscope-ui")) {
+        return true;
+    }
+    return QProcess::startDetached(executablePath("usbscope-ui"));
+}
