@@ -1,7 +1,7 @@
 #include <QCoreApplication>
 #include <QDBusConnection>
 
-#include "dbus_helpers.h"
+#include "dbus_adaptor.h"
 #include "journaltail.h"
 #include "usbdaemon.h"
 #include "usbmonitor.h"

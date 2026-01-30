@@ -2,6 +2,8 @@
 
 #include <QAbstractTableModel>
 #include <QCheckBox>
+#include <QComboBox>
+#include <QDateTimeEdit>
 #include <QLineEdit>
 #include <QListWidget>
 #include <QMainWindow>
@@ -32,10 +34,21 @@ private:
 class UsbLogFilterProxyModel : public QSortFilterProxyModel {
     Q_OBJECT
 public:
+    enum FilterPreset {
+        AllEvents,
+        UsbEventsOnly,
+        ErrorsOnly,
+        UsbErrors,
+        Custom
+    };
+
     explicit UsbLogFilterProxyModel(QObject *parent = nullptr);
 
     void setUsbOnly(bool enabled);
     void setErrorsOnly(bool enabled);
+    void setFilterPreset(FilterPreset preset);
+    void setDateRange(const QDateTime &start, const QDateTime &end);
+    void clearDateRange();
 
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
@@ -43,6 +56,9 @@ protected:
 private:
     bool m_usbOnly = false;
     bool m_errorsOnly = false;
+    bool m_useDateFilter = false;
+    QDateTime m_startDate;
+    QDateTime m_endDate;
 };
 
 class MainWindow : public QMainWindow {
@@ -54,18 +70,35 @@ private slots:
     void handleLogEvent(const UsbEvent &event);
     void refreshDevices();
     void updateFilters();
+    void onFilterPresetChanged(int index);
+    void onDateRangeChanged();
+    void showAboutDialog();
+    void exportToCsv();
+    void copySelection();
 
 private:
     void setupUi();
+    void setupMenuBar();
+    void setupActions();
     void loadInitialData();
 
     UsbscopeDBusClient m_client;
     UsbLogModel m_model;
     UsbLogFilterProxyModel m_filterModel;
 
+    // UI Components
     QTableView *m_logView = nullptr;
     QListWidget *m_deviceList = nullptr;
     QLineEdit *m_textFilter = nullptr;
-    QCheckBox *m_usbOnly = nullptr;
-    QCheckBox *m_errorsOnly = nullptr;
+    QComboBox *m_filterPreset = nullptr;
+    QDateTimeEdit *m_startDate = nullptr;
+    QDateTimeEdit *m_endDate = nullptr;
+    QCheckBox *m_enableDateFilter = nullptr;
+
+    // Actions
+    QAction *m_exportCsvAction = nullptr;
+    QAction *m_copyAction = nullptr;
+    QAction *m_quitAction = nullptr;
+    QAction *m_refreshAction = nullptr;
+    QAction *m_aboutAction = nullptr;
 };

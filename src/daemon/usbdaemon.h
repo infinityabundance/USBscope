@@ -3,8 +3,9 @@
 #include <QDateTime>
 #include <QObject>
 
-#include "dbus_helpers.h"
 #include "usbtypes.h"
+
+class UsbscopeDBusAdaptor;
 
 class UsbDaemon : public QObject {
     Q_OBJECT
