@@ -31,6 +31,8 @@ USBscope is a live USB event dashboard for Linux. It ships a small system daemon
 Dependencies: Qt6 (Core, Widgets, DBus), libudev, CMake, a C++17 compiler.
 
 ```bash
+git clone https://github.com/infinityabundance/USBscope.git
+cd USBscope
 cmake -S . -B build
 cmake --build build
 ```
