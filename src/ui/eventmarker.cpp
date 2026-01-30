@@ -22,7 +22,7 @@ EventMarker::EventMarker(const UsbEvent &event, qreal x, qreal y, qreal size)
     }
 
     setBrush(QBrush(m_baseColor));
-    setPen(QPen(m_baseColor.darker(120), 1));
+    setPen(QPen(m_baseColor.darker(120), 1.5));
 
     setAcceptHoverEvents(true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -64,7 +64,7 @@ void EventMarker::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
 
     // Restore original color
     setBrush(QBrush(m_baseColor));
-    setPen(QPen(m_baseColor.darker(120), 1));
+    setPen(QPen(m_baseColor.darker(120), 1.5));
 
     QToolTip::hideText();
 
