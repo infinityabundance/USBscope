@@ -9,6 +9,7 @@
 AboutDialog::AboutDialog(QWidget *parent)
     : QDialog(parent) {
     setWindowTitle("About USBscope");
+    setWindowIcon(QIcon::fromTheme("usb"));
     setMinimumWidth(400);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
