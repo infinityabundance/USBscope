@@ -204,6 +204,9 @@ void MainWindow::setupActions() {
     m_exportCsvAction->setShortcut(QKeySequence::SaveAs);
     connect(m_exportCsvAction, &QAction::triggered, this, &MainWindow::exportToCsv);
 
+    m_exportDevicesAction = new QAction(QIcon::fromTheme("document-export"), "Export Devices to CSV...", this);
+    connect(m_exportDevicesAction, &QAction::triggered, this, &MainWindow::exportDevicesToCsv);
+
     m_copyAction = new QAction(QIcon::fromTheme("edit-copy"), "Copy Selection", this);
     m_copyAction->setShortcut(QKeySequence::Copy);
     connect(m_copyAction, &QAction::triggered, this, &MainWindow::copySelection);
@@ -231,6 +234,7 @@ void MainWindow::setupMenuBar() {
 
     QMenu *fileMenu = menuBar->addMenu("&File");
     fileMenu->addAction(m_exportCsvAction);
+    fileMenu->addAction(m_exportDevicesAction);
     fileMenu->addSeparator();
     fileMenu->addAction(m_quitAction);
 
@@ -312,6 +316,9 @@ void MainWindow::setupUi() {
     connect(m_logView, &QTableView::customContextMenuRequested, this, &MainWindow::showContextMenu);
 
     m_deviceList = new QListWidget(this);
+    m_deviceList->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    m_deviceList->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(m_deviceList, &QListWidget::customContextMenuRequested, this, &MainWindow::showDeviceContextMenu);
 
     QSplitter *splitter = new QSplitter(this);
     splitter->addWidget(m_logView);
@@ -385,6 +392,7 @@ void MainWindow::loadInitialData() {
     QList<UsbEvent> events = m_client.getRecentEvents(500);
     m_model.setEvents(events);
     m_timelineScene->setEvents(events);
+    m_timelineView->fitToView();
     refreshDevices();
 }
 
@@ -404,7 +412,8 @@ void MainWindow::refreshDevices() {
         if (!device.vendorId.isEmpty() && !device.productId.isEmpty()) {
             label += QStringLiteral(" (%1:%2)").arg(device.vendorId, device.productId);
         }
-        m_deviceList->addItem(label);
+        QListWidgetItem *item = new QListWidgetItem(label, m_deviceList);
+        item->setData(Qt::UserRole, QVariant::fromValue(toVariant(device)));
     }
 }
 
@@ -488,6 +497,29 @@ void MainWindow::copySelection() {
     QApplication::clipboard()->setText(text);
 }
 
+void MainWindow::copyDevicesSelection() {
+    QList<QListWidgetItem *> selected = m_deviceList->selectedItems();
+    if (selected.isEmpty()) {
+        return;
+    }
+
+    QString text;
+    for (QListWidgetItem *item : selected) {
+        const QVariantList data = item->data(Qt::UserRole).toList();
+        const UsbDeviceInfo device = deviceFromVariant(data);
+        QStringList fields;
+        fields << device.busId
+               << device.deviceId
+               << device.vendorId
+               << device.productId
+               << device.summary
+               << device.sysPath;
+        text += fields.join("\t") + "\n";
+    }
+
+    QApplication::clipboard()->setText(text);
+}
+
 void MainWindow::showContextMenu(const QPoint &pos) {
     QMenu contextMenu(this);
 
@@ -524,6 +556,62 @@ void MainWindow::showContextMenu(const QPoint &pos) {
     contextMenu.addAction(m_exportCsvAction);
 
     contextMenu.exec(m_logView->mapToGlobal(pos));
+}
+
+void MainWindow::showDeviceContextMenu(const QPoint &pos) {
+    QMenu contextMenu(this);
+
+    bool hasSelection = !m_deviceList->selectedItems().isEmpty();
+
+    QAction *copyDevicesAction = contextMenu.addAction(QIcon::fromTheme("edit-copy"), "Copy Selected Device(s)");
+    copyDevicesAction->setEnabled(hasSelection);
+    connect(copyDevicesAction, &QAction::triggered, this, &MainWindow::copyDevicesSelection);
+
+    contextMenu.addSeparator();
+    contextMenu.addAction(m_exportDevicesAction);
+
+    contextMenu.exec(m_deviceList->mapToGlobal(pos));
+}
+
+void MainWindow::exportDevicesToCsv() {
+    QString fileName = QFileDialog::getSaveFileName(
+        this,
+        "Export Devices to CSV",
+        "usbscope_devices.csv",
+        "CSV Files (*.csv);;All Files (*)");
+
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QMessageBox::warning(this, "Export Failed", "Could not open file for writing.");
+        return;
+    }
+
+    QTextStream out(&file);
+    out << "\"Bus ID\",\"Device ID\",\"Vendor ID\",\"Product ID\",\"Summary\",\"Sys Path\"\n";
+
+    const QList<UsbDeviceInfo> devices = m_client.getCurrentDevices();
+    for (const UsbDeviceInfo &device : devices) {
+        QStringList fields;
+        fields << device.busId
+               << device.deviceId
+               << device.vendorId
+               << device.productId
+               << device.summary
+               << device.sysPath;
+        for (QString &field : fields) {
+            field.replace("\"", "\"\"");
+            field = QString("\"%1\"").arg(field);
+        }
+        out << fields.join(",") << "\n";
+    }
+
+    file.close();
+    QMessageBox::information(this, "Export Complete",
+        QString("Exported %1 devices to %2").arg(devices.size()).arg(fileName));
 }
 
 void MainWindow::onTimelineEventClicked(const UsbEvent &event) {
