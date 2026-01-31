@@ -11,6 +11,7 @@
 #include <QTableView>
 #include <QTabWidget>
 #include <QTimer>
+#include <QLabel>
 
 #include "dbus_helpers.h"
 
@@ -87,6 +88,7 @@ private slots:
     void startDaemon();
     void stopDaemon();
     void openTray();
+    void updateDaemonStatusLabel();
 
 private:
     void setupUi();
@@ -123,4 +125,6 @@ private:
     QAction *m_startDaemonAction = nullptr;
     QAction *m_stopDaemonAction = nullptr;
     QAction *m_openTrayAction = nullptr;
+    QLabel *m_daemonStatusLabel = nullptr;
+    QTimer m_daemonStatusTimer;
 };

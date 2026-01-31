@@ -6,6 +6,7 @@
 #include "timelineview.h"
 
 #include <QApplication>
+#include <QBrush>
 #include <QClipboard>
 #include <QComboBox>
 #include <QDateTime>
@@ -18,11 +19,33 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QSizePolicy>
 #include <QSplitter>
 #include <QTabWidget>
 #include <QTextStream>
 #include <QToolBar>
 #include <QVBoxLayout>
+
+namespace {
+QColor eventColor(const UsbEvent &event) {
+    if (event.isError) {
+        return QColor("#da4453"); // Breeze Red
+    }
+    if (event.level.contains("warn", Qt::CaseInsensitive)) {
+        return QColor("#f67400"); // Breeze Orange
+    }
+    if (event.isUsb) {
+        return QColor("#27ae60"); // Breeze Green
+    }
+    return QColor("#3daee9"); // Breeze Blue
+}
+
+QColor eventBackgroundColor(const UsbEvent &event) {
+    QColor color = eventColor(event);
+    color.setAlpha(28);
+    return color;
+}
+}
 
 UsbLogModel::UsbLogModel(QObject *parent)
     : QAbstractTableModel(parent) {
@@ -62,6 +85,9 @@ QVariant UsbLogModel::data(const QModelIndex &index, int role) const {
         default:
             return {};
         }
+    }
+    if (role == Qt::BackgroundRole) {
+        return QBrush(eventBackgroundColor(event));
     }
     return {};
 }
@@ -275,6 +301,14 @@ void MainWindow::setupToolBar() {
     toolBar->addSeparator();
     toolBar->addAction(m_openTrayAction);
 
+    QWidget *spacer = new QWidget(this);
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    toolBar->addWidget(spacer);
+
+    m_daemonStatusLabel = new QLabel("Daemon: unknown", this);
+    m_daemonStatusLabel->setStyleSheet("color: #666;");
+    toolBar->addWidget(m_daemonStatusLabel);
+
     addToolBar(toolBar);
 }
 
@@ -320,6 +354,25 @@ void MainWindow::setupUi() {
     filterLayout->addWidget(new QLabel("to"));
     filterLayout->addWidget(m_endDate);
     filterLayout->addStretch();
+
+    auto addLegendItem = [this, filterLayout](const QString &label, const QString &color) {
+        QWidget *swatch = new QWidget(this);
+        swatch->setFixedSize(10, 10);
+        swatch->setStyleSheet(QString("background-color: %1; border-radius: 5px;").arg(color));
+        filterLayout->addSpacing(10);
+        filterLayout->addWidget(swatch);
+        QLabel *text = new QLabel(label, this);
+        text->setStyleSheet("color: #666;");
+        filterLayout->addWidget(text);
+    };
+
+    QLabel *legendLabel = new QLabel("Legend:", this);
+    legendLabel->setStyleSheet("color: #666;");
+    filterLayout->addWidget(legendLabel);
+    addLegendItem("Error", "#da4453");
+    addLegendItem("Warn", "#f67400");
+    addLegendItem("USB", "#27ae60");
+    addLegendItem("Other", "#3daee9");
 
     m_logView = new QTableView(this);
     m_logView->horizontalHeader()->setStretchLastSection(true);
@@ -418,6 +471,10 @@ void MainWindow::setupUi() {
     });
     connect(m_startDate, &QDateTimeEdit::dateTimeChanged, this, &MainWindow::onDateRangeChanged);
     connect(m_endDate, &QDateTimeEdit::dateTimeChanged, this, &MainWindow::onDateRangeChanged);
+
+    connect(&m_daemonStatusTimer, &QTimer::timeout, this, &MainWindow::updateDaemonStatusLabel);
+    m_daemonStatusTimer.start(5000);
+    updateDaemonStatusLabel();
 }
 
 void MainWindow::loadInitialData() {
@@ -668,12 +725,22 @@ void MainWindow::onTimelineEventClicked(const UsbEvent &event) {
 
 void MainWindow::startDaemon() {
     startUsbScopeDaemon();
+    updateDaemonStatusLabel();
 }
 
 void MainWindow::stopDaemon() {
     stopUsbScopeDaemon();
+    updateDaemonStatusLabel();
 }
 
 void MainWindow::openTray() {
     startUsbScopeTray();
+}
+
+void MainWindow::updateDaemonStatusLabel() {
+    if (!m_daemonStatusLabel) {
+        return;
+    }
+    const bool running = isUsbScopeRunning();
+    m_daemonStatusLabel->setText(running ? "Daemon: running" : "Daemon: stopped");
 }
