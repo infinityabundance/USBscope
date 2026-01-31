@@ -224,6 +224,9 @@ void MainWindow::setupActions() {
     m_stopDaemonAction = new QAction(QIcon::fromTheme("media-playback-stop"), "Stop Daemon", this);
     connect(m_stopDaemonAction, &QAction::triggered, this, &MainWindow::stopDaemon);
 
+    m_openTrayAction = new QAction(QIcon::fromTheme("preferences-system-tray"), "Open Tray", this);
+    connect(m_openTrayAction, &QAction::triggered, this, &MainWindow::openTray);
+
     m_quitAction = new QAction(QIcon::fromTheme("application-exit"), "Quit", this);
     m_quitAction->setShortcut(QKeySequence::Quit);
     connect(m_quitAction, &QAction::triggered, qApp, &QApplication::quit);
@@ -247,6 +250,8 @@ void MainWindow::setupMenuBar() {
     QMenu *toolsMenu = menuBar->addMenu("&Tools");
     toolsMenu->addAction(m_startDaemonAction);
     toolsMenu->addAction(m_stopDaemonAction);
+    toolsMenu->addSeparator();
+    toolsMenu->addAction(m_openTrayAction);
 
     QMenu *helpMenu = menuBar->addMenu("&Help");
     helpMenu->addAction(m_aboutAction);
@@ -262,6 +267,8 @@ void MainWindow::setupToolBar() {
     toolBar->addAction(m_copyAction);
     toolBar->addSeparator();
     toolBar->addAction(m_refreshAction);
+    toolBar->addSeparator();
+    toolBar->addAction(m_openTrayAction);
 
     addToolBar(toolBar);
 }
@@ -640,4 +647,8 @@ void MainWindow::startDaemon() {
 
 void MainWindow::stopDaemon() {
     stopUsbScopeDaemon();
+}
+
+void MainWindow::openTray() {
+    startUsbScopeTray();
 }

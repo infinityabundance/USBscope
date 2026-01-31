@@ -86,6 +86,7 @@ private slots:
     void onTimelineEventClicked(const UsbEvent &event);
     void startDaemon();
     void stopDaemon();
+    void openTray();
 
 private:
     void setupUi();
@@ -121,4 +122,5 @@ private:
     QAction *m_aboutAction = nullptr;
     QAction *m_startDaemonAction = nullptr;
     QAction *m_stopDaemonAction = nullptr;
+    QAction *m_openTrayAction = nullptr;
 };
