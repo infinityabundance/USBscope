@@ -361,6 +361,26 @@ void MainWindow::setupUi() {
     helpLabel->setStyleSheet("color: #666;");
     timelineControls->addWidget(helpLabel);
 
+    auto addLegendItem = [this, timelineControls](const QString &label, const QString &color) {
+        QWidget *swatch = new QWidget(this);
+        swatch->setFixedSize(10, 10);
+        swatch->setStyleSheet(QString("background-color: %1; border-radius: 5px;").arg(color));
+        timelineControls->addSpacing(10);
+        timelineControls->addWidget(swatch);
+        QLabel *text = new QLabel(label, this);
+        text->setStyleSheet("color: #666;");
+        timelineControls->addWidget(text);
+    };
+
+    timelineControls->addSpacing(10);
+    QLabel *legendLabel = new QLabel("Legend:", this);
+    legendLabel->setStyleSheet("color: #666;");
+    timelineControls->addWidget(legendLabel);
+    addLegendItem("Error", "#da4453");
+    addLegendItem("Warn", "#f67400");
+    addLegendItem("USB", "#27ae60");
+    addLegendItem("Other", "#3daee9");
+
     // Create timeline view and scene
     m_timelineScene = new TimelineScene(this);
     m_timelineView = new TimelineView(this);
