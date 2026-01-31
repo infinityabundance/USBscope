@@ -8,9 +8,11 @@
 #include <QProcess>
 #include <QUrl>
 
+#include "icon_helpers.h"
+
 TrayIcon::TrayIcon(QObject *parent)
     : QSystemTrayIcon(parent) {
-    setIcon(QIcon::fromTheme("usb"));
+    setIcon(loadUsbScopeIcon());
     setupMenu();
 
     connect(this, &QSystemTrayIcon::activated, this, [this](QSystemTrayIcon::ActivationReason reason) {

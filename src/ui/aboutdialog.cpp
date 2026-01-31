@@ -1,30 +1,27 @@
 #include "aboutdialog.h"
 
-#include <QCoreApplication>
 #include <QDesktopServices>
-#include <QFileInfo>
 #include <QLabel>
 #include <QPixmap>
 #include <QPushButton>
 #include <QUrl>
 #include <QVBoxLayout>
 
+#include "icon_helpers.h"
+
 AboutDialog::AboutDialog(QWidget *parent)
     : QDialog(parent) {
     setWindowTitle("About USBscope");
-    setWindowIcon(QIcon::fromTheme("usb"));
+    setWindowIcon(loadUsbScopeIcon());
     setMinimumWidth(400);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
 
     QLabel *iconLabel = new QLabel(this);
-    const QString appDir = QCoreApplication::applicationDirPath();
-    const QString iconPath = appDir + "/../assets/usbscope.png";
     QPixmap logo;
-    if (QFileInfo::exists(iconPath)) {
-        logo.load(iconPath);
-    } else {
-        logo = QIcon::fromTheme("usb").pixmap(96, 96);
+    QIcon icon = loadUsbScopeIcon();
+    if (!icon.isNull()) {
+        logo = icon.pixmap(96, 96);
     }
     if (!logo.isNull()) {
         iconLabel->setPixmap(logo.scaled(96, 96, Qt::KeepAspectRatio, Qt::SmoothTransformation));
