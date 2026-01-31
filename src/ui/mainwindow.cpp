@@ -357,8 +357,8 @@ void MainWindow::setupUi() {
 
     auto addLogLegendItem = [this, filterLayout](const QString &label, const QString &color) {
         QWidget *swatch = new QWidget(this);
-        swatch->setFixedSize(10, 10);
-        swatch->setStyleSheet(QString("background-color: %1; border-radius: 5px;").arg(color));
+        swatch->setFixedSize(16, 10);
+        swatch->setStyleSheet(QString("background-color: %1; border-radius: 4px;").arg(color));
         filterLayout->addSpacing(10);
         filterLayout->addWidget(swatch);
         QLabel *text = new QLabel(label, this);
@@ -416,8 +416,8 @@ void MainWindow::setupUi() {
 
     auto addTimelineLegendItem = [this, timelineControls](const QString &label, const QString &color) {
         QWidget *swatch = new QWidget(this);
-        swatch->setFixedSize(10, 10);
-        swatch->setStyleSheet(QString("background-color: %1; border-radius: 5px;").arg(color));
+        swatch->setFixedSize(16, 10);
+        swatch->setStyleSheet(QString("background-color: %1; border-radius: 4px;").arg(color));
         timelineControls->addSpacing(10);
         timelineControls->addWidget(swatch);
         QLabel *text = new QLabel(label, this);
