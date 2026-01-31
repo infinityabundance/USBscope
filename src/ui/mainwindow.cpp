@@ -366,7 +366,10 @@ void MainWindow::setupUi() {
         layout->addWidget(text);
     };
 
-    QHBoxLayout *logLegendLayout = new QHBoxLayout();
+    QWidget *logLegendRow = new QWidget(this);
+    logLegendRow->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    QHBoxLayout *logLegendLayout = new QHBoxLayout(logLegendRow);
+    logLegendLayout->setContentsMargins(0, 0, 0, 0);
     QLabel *logLegendLabel = new QLabel("Legend:", this);
     logLegendLabel->setStyleSheet("color: #666;");
     logLegendLayout->addWidget(logLegendLabel);
@@ -394,7 +397,7 @@ void MainWindow::setupUi() {
     splitter->setStretchFactor(1, 1);
 
     logLayout->addLayout(filterLayout);
-    logLayout->addLayout(logLegendLayout);
+    logLayout->addWidget(logLegendRow);
     logLayout->addWidget(splitter);
 
     // ===== Timeline Tab =====
