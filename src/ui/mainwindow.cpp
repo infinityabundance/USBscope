@@ -109,12 +109,14 @@ UsbLogFilterProxyModel::UsbLogFilterProxyModel(QObject *parent)
 
 void UsbLogFilterProxyModel::setUsbOnly(bool enabled) {
     m_usbOnly = enabled;
-    invalidateFilter();
+    beginFilterChange();
+    endFilterChange();
 }
 
 void UsbLogFilterProxyModel::setErrorsOnly(bool enabled) {
     m_errorsOnly = enabled;
-    invalidateFilter();
+    beginFilterChange();
+    endFilterChange();
 }
 
 void UsbLogFilterProxyModel::setFilterPreset(FilterPreset preset) {
@@ -138,19 +140,22 @@ void UsbLogFilterProxyModel::setFilterPreset(FilterPreset preset) {
     case Custom:
         break;
     }
-    invalidateFilter();
+    beginFilterChange();
+    endFilterChange();
 }
 
 void UsbLogFilterProxyModel::setDateRange(const QDateTime &start, const QDateTime &end) {
     m_startDate = start;
     m_endDate = end;
     m_useDateFilter = true;
-    invalidateFilter();
+    beginFilterChange();
+    endFilterChange();
 }
 
 void UsbLogFilterProxyModel::clearDateRange() {
     m_useDateFilter = false;
-    invalidateFilter();
+    beginFilterChange();
+    endFilterChange();
 }
 
 bool UsbLogFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const {
