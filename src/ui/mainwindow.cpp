@@ -355,24 +355,26 @@ void MainWindow::setupUi() {
     filterLayout->addWidget(m_endDate);
     filterLayout->addStretch();
 
-    auto addLogLegendItem = [this, filterLayout](const QString &label, const QString &color) {
+    auto addLogLegendItem = [this](QHBoxLayout *layout, const QString &label, const QString &color) {
         QWidget *swatch = new QWidget(this);
         swatch->setFixedSize(16, 10);
         swatch->setStyleSheet(QString("background-color: %1; border-radius: 4px;").arg(color));
-        filterLayout->addSpacing(10);
-        filterLayout->addWidget(swatch);
+        layout->addSpacing(10);
+        layout->addWidget(swatch);
         QLabel *text = new QLabel(label, this);
         text->setStyleSheet("color: #666;");
-        filterLayout->addWidget(text);
+        layout->addWidget(text);
     };
 
+    QHBoxLayout *logLegendLayout = new QHBoxLayout();
     QLabel *logLegendLabel = new QLabel("Legend:", this);
     logLegendLabel->setStyleSheet("color: #666;");
-    filterLayout->addWidget(logLegendLabel);
-    addLogLegendItem("Error", "#da4453");
-    addLogLegendItem("Warn", "#f67400");
-    addLogLegendItem("USB", "#27ae60");
-    addLogLegendItem("Other", "#3daee9");
+    logLegendLayout->addWidget(logLegendLabel);
+    addLogLegendItem(logLegendLayout, "Error", "#da4453");
+    addLogLegendItem(logLegendLayout, "Warn", "#f67400");
+    addLogLegendItem(logLegendLayout, "USB", "#27ae60");
+    addLogLegendItem(logLegendLayout, "Other", "#3daee9");
+    logLegendLayout->addStretch();
 
     m_logView = new QTableView(this);
     m_logView->horizontalHeader()->setStretchLastSection(true);
@@ -392,6 +394,7 @@ void MainWindow::setupUi() {
     splitter->setStretchFactor(1, 1);
 
     logLayout->addLayout(filterLayout);
+    logLayout->addLayout(logLegendLayout);
     logLayout->addWidget(splitter);
 
     // ===== Timeline Tab =====
