@@ -13,6 +13,12 @@ TrayIcon::TrayIcon(QObject *parent)
     setIcon(QIcon::fromTheme("usb"));
     setupMenu();
 
+    connect(this, &QSystemTrayIcon::activated, this, [this](QSystemTrayIcon::ActivationReason reason) {
+        if (reason == QSystemTrayIcon::Trigger || reason == QSystemTrayIcon::DoubleClick) {
+            openUi();
+        }
+    });
+
     connect(&m_client, &UsbscopeDBusClient::LogEvent, this, &TrayIcon::handleLogEvent);
     connect(&m_client, &UsbscopeDBusClient::ErrorBurst, this, &TrayIcon::handleErrorBurst);
 
