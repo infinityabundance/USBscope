@@ -2,6 +2,7 @@
 #include <QIcon>
 
 #include "dbus_helpers.h"
+#include "icon_helpers.h"
 #include "mainwindow.h"
 
 namespace {
@@ -18,7 +19,8 @@ int main(int argc, char *argv[]) {
     ensureDaemonAndTrayRunning();
 
     MainWindow window;
-    window.setWindowIcon(QIcon::fromTheme("usb"));
+    app.setWindowIcon(loadUsbScopeIcon());
+    window.setWindowIcon(loadUsbScopeIcon());
     window.show();
 
     return app.exec();
