@@ -42,6 +42,9 @@ USBscope is a live USB event dashboard for CachyOS / ArchLinux. It ships a small
 
 ## Build
 Dependencies: Qt6 (Core, Widgets, DBus), libudev, CMake, a C++17 compiler.
+```bash
+sudo pacman -S --needed cmake make gcc qt6-base qt6-tools libudev0-shim
+```
 
 ```bash
 git clone https://github.com/infinityabundance/USBscope.git
@@ -50,33 +53,11 @@ cmake -S . -B build
 cmake --build build
 ```
 
-The build produces three executables: `usbscoped`, `usbscope-ui`, and `usbscope-tray`.
-
-## Install dependencies
-
-### Arch / CachyOS
-```bash
-sudo pacman -S --needed cmake make gcc qt6-base qt6-tools libudev0-shim
-```
-
-### Fedora
-```bash
-sudo dnf install cmake gcc-c++ qt6-qtbase-devel qt6-qttools-devel systemd-devel libudev-devel
-```
-
-### Ubuntu / Debian
-```bash
-sudo apt update
-sudo apt install cmake g++ qt6-base-dev qt6-tools-dev libudev-dev
-```
-
 ## Run
 Start the daemon first, then launch the UI or tray app:
 
 ```bash
-./build/usbscoped
 ./build/usbscope-ui
-./build/usbscope-tray
 ```
 
 There is also a sample systemd service file at `data/usbscoped.service`.
