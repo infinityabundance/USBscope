@@ -41,9 +41,9 @@ USBscope is a live USB event dashboard for CachyOS / ArchLinux. It ships a small
 4. The UI and tray clients subscribe to those signals and request history on startup.
 
 ## Build
-Dependencies: Qt6 (Core, Widgets, DBus), libudev, CMake, a C++17 compiler.
+Dependencies: Qt6 (Core, Widgets, DBus), CMake, a C++17 compiler.
 ```bash
-sudo pacman -S --needed cmake make gcc qt6-base qt6-tools libudev0-shim
+sudo pacman -S --needed cmake make gcc qt6-base qt6-tools 
 ```
 
 ```bash
