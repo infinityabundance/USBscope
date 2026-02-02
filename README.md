@@ -54,7 +54,7 @@ cmake --build build
 ```
 
 ## Run
-Start the daemon first, then launch the UI or tray app:
+Launch the UI:
 
 ```bash
 ./build/usbscope-ui
