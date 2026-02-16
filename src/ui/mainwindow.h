@@ -39,6 +39,8 @@ private:
 class UsbLogFilterProxyModel : public QSortFilterProxyModel {
     Q_OBJECT
 public:
+    // Predefined filter combinations for common USB log use cases.
+    // These map to combinations of the m_usbOnly and m_errorsOnly flags.
     enum FilterPreset {
         AllEvents,
         UsbEventsOnly,
@@ -74,7 +76,6 @@ public:
 private slots:
     void handleLogEvent(const UsbEvent &event);
     void refreshDevices();
-    void updateFilters();
     void onFilterPresetChanged(int index);
     void onDateRangeChanged();
     void showAboutDialog();

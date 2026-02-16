@@ -28,6 +28,17 @@ USBscope is a live USB event dashboard for CachyOS / ArchLinux. It ships a small
 - Provides a Qt UI with filtering, search, timeline visualization, and CSV export.
 - Provides a tray icon for quick status and error burst notifications.
 
+### Log filtering
+- **Text search**: free-text filter on the log message column.
+- **Presets**: quickly switch between all events, USB-only, errors-only, or USB errors.
+- **Date range**: optionally restrict visible events between two timestamps.
+
+### Timeline view
+- Visualizes USB events over time using the same color scheme as the log table.
+- **Zoom** with Ctrl+mouse wheel for horizontal time scaling.
+- **Pan** the view with middle-click drag or Shift+left-click drag.
+- Clicking an event in the timeline recenters the log view on the matching row.
+
 ## Components
 - `usbscoped`: daemon that reads kernel logs and udev, emits D-Bus signals.
 - `usbscope-ui`: Qt desktop app with log table, device list, and timeline view.
@@ -61,6 +72,10 @@ Launch the UI:
 ```
 
 There is also a sample systemd service file at `data/usbscoped.service`.
+
+## Hacking
+
+If you want to read or modify the code, see [`HACKING.md`](HACKING.md) for a short contributor-oriented overview.
 
 ## D-Bus API
 Interface: `org.cachyos.USBscope1` on the session bus by default.
