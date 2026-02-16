@@ -7,6 +7,11 @@
 
 #include "usbtypes.h"
 
+// Thin client for talking to the usbscoped daemon over the
+// org.cachyos.USBscope1 D-Bus interface. Provides typed helpers for the
+// public methods (GetRecentEvents, GetCurrentDevices, GetStateSummary) and
+// re-emits the LogEvent / DevicesChanged / ErrorBurst signals as Qt signals.
+
 class UsbscopeDBusClient : public QObject {
     Q_OBJECT
 public:

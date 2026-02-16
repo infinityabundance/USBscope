@@ -24,15 +24,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
-    void setupControls();
-
     qreal m_currentZoom = 1.0;
     bool m_isPanning = false;
     QPoint m_lastPanPoint;
-
-    // Control widgets (stored as members for access)
-    QComboBox *m_timeRangeCombo = nullptr;
-    QPushButton *m_zoomInBtn = nullptr;
-    QPushButton *m_zoomOutBtn = nullptr;
-    QPushButton *m_resetZoomBtn = nullptr;
 };

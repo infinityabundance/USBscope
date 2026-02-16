@@ -146,6 +146,8 @@ void UsbLogFilterProxyModel::setErrorsOnly(bool enabled) {
 }
 
 void UsbLogFilterProxyModel::setFilterPreset(FilterPreset preset) {
+    // Map high-level presets to the underlying usb-only / errors-only flags.
+    // Custom leaves the flags unchanged so callers can configure them manually.
     switch (preset) {
     case AllEvents:
         m_usbOnly = false;
@@ -323,6 +325,7 @@ void MainWindow::setupUi() {
     QWidget *logTab = new QWidget();
     QVBoxLayout *logLayout = new QVBoxLayout(logTab);
 
+    // Top-of-log filter row: text search, preset combos, and optional date range.
     QHBoxLayout *filterLayout = new QHBoxLayout();
 
     m_textFilter = new QLineEdit(this);
@@ -416,6 +419,8 @@ void MainWindow::setupUi() {
     timelineControls->addWidget(resetZoomBtn);
     timelineControls->addStretch();
 
+    // This help label mirrors the interaction model implemented by TimelineView
+    // (Ctrl+Wheel zoom, middle or Shift+Click to pan).
     QLabel *helpLabel = new QLabel("Ctrl+Wheel to zoom, Shift+Click or Middle-click to pan");
     helpLabel->setStyleSheet("color: #666;");
     timelineControls->addWidget(helpLabel);
@@ -510,10 +515,6 @@ void MainWindow::refreshDevices() {
         QListWidgetItem *item = new QListWidgetItem(label, m_deviceList);
         item->setData(Qt::UserRole, QVariant::fromValue(toVariant(device)));
     }
-}
-
-void MainWindow::updateFilters() {
-    // Filters are now handled by preset combo box
 }
 
 void MainWindow::onFilterPresetChanged(int index) {

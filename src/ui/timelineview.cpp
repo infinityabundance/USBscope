@@ -44,6 +44,8 @@ void TimelineView::fitToView() {
 }
 
 void TimelineView::wheelEvent(QWheelEvent *event) {
+    // With Ctrl held, use the mouse wheel to zoom horizontally in time.
+    // Without modifiers, fall back to the default scroll behavior.
     if (event->modifiers() & Qt::ControlModifier) {
         // Zoom with Ctrl+Wheel
         if (event->angleDelta().y() > 0) {
@@ -59,6 +61,8 @@ void TimelineView::wheelEvent(QWheelEvent *event) {
 }
 
 void TimelineView::mousePressEvent(QMouseEvent *event) {
+    // Middle button, or Shift+Left, enters a temporary panning mode so users
+    // can drag the timeline view without changing the zoom level.
     if (event->button() == Qt::MiddleButton ||
         (event->button() == Qt::LeftButton && event->modifiers() & Qt::ShiftModifier)) {
         // Enable panning

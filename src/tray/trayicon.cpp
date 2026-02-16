@@ -12,6 +12,8 @@
 
 TrayIcon::TrayIcon(QObject *parent)
     : QSystemTrayIcon(parent) {
+    // System tray front-end for USBscope. Subscribes to live D-Bus events from
+    // the daemon and surfaces daemon status / error bursts as notifications.
     setIcon(loadUsbScopeIcon());
     setupMenu();
 
